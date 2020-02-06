@@ -85,7 +85,7 @@ namespace RandomSolutions
         static void _addHeader<T>(Document document, Unit innerWidth, ArrayToPdfScheme<T> scheme)
         {
             var header = document.LastSection.Headers.Primary;
-            var paragraph = header.AddParagraph(scheme.Title);
+            var paragraph = header.AddParagraph(scheme.Title ?? string.Empty);
             paragraph.Format.LeftIndent = Unit.FromMillimeter(_tableLeftBias);
             paragraph.AddTab();
             paragraph.AddPageField();
@@ -104,24 +104,33 @@ namespace RandomSolutions
 
 
             var colWidth = Unit.FromPoint(innerWidth / scheme.Columns.Count);
+            var settedWidth = scheme.Columns.Sum(x => x.Width ?? 0);
+            var autoWidthCount = scheme.Columns.Count(x => !x.Width.HasValue);
+            var autoWidth = (innerWidth.Millimeter - settedWidth) / (autoWidthCount > 0 ? autoWidthCount : 1);
 
             // create columns
-            scheme.Columns.ForEach(x => table.AddColumn(colWidth).Format.Alignment = (ParagraphAlignment)(x.Alignment ?? scheme.Alignment));
+            scheme.Columns.ForEach(x => table.AddColumn(Unit.FromMillimeter(x.Width ?? autoWidth)).Format.Alignment = (ParagraphAlignment)(x.Alignment ?? scheme.Alignment));
 
             // add header
             var row = table.AddRow();
+            row.TopPadding = 2;
+            row.BottomPadding = 2;
             row.HeadingFormat = true;
             row.Format.Font.Bold = true;
             row.Shading.Color = Colors.LightGray;
+            row.VerticalAlignment = VerticalAlignment.Center;
             scheme.Columns.ForEach(x => row.Cells[x.Index].AddParagraph(x.Name));
 
             // add rows
-            var itemsCount = 0;
+            //var itemsCount = 0;
             foreach (var item in items)
             {
-                itemsCount++;
+                //itemsCount++;
                 row = table.AddRow();
-                foreach(var col in scheme.Columns)
+                row.TopPadding = 1;
+                row.BottomPadding = 1;
+                row.VerticalAlignment = VerticalAlignment.Center;
+                foreach (var col in scheme.Columns)
                 {
                     var value = col.ValueFn(item);
                     var cell = row.Cells[col.Index];

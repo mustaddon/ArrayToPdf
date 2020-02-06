@@ -52,6 +52,9 @@ namespace RandomSolutions
             return this;
         }
 
+        /// <summary>
+        /// Width in Millimeters
+        /// </summary>
         public ArrayToPdfScheme<T> AddColumn(string name, Func<T, object> value, uint? width = null, ArrayToPdfAlignments? alignment = null)
         {
             (_columns ?? (_columns = new List<Column>())).Add(new Column
