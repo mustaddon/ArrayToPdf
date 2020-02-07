@@ -57,6 +57,7 @@ namespace TestConsoleApp
             var items = Enumerable.Range(1, 1000).Select(x => new
             {
                 Bool = x % 2 == 0,
+                NullableBool = x % 2 == 0 ? true : (bool?)null,
                 Int = -x * 100,
                 Uint = (uint)x * 100,
                 Long = (long)x * 100,
@@ -81,6 +82,7 @@ namespace TestConsoleApp
                 //scheme.HeaderFontBold = true;
                 //scheme.HeaderHeight = 8;
                 //scheme.Footer = "\tPage:{PAGE}";
+                //scheme.TableAlignment = ArrayToPdfAlignments.Left;
                 //scheme.AddColumn("mycolumn#1", x => x.Int);
                 //scheme.AddColumn("mycolumn#2", x => x.Bool);
                 //scheme.AddColumn("mycolumn#3", x => x.String);
