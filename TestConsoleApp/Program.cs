@@ -10,30 +10,83 @@ namespace TestConsoleApp
     {
         static void Main(string[] args)
         {
+            Example1();
+            Example2();
             Test();
         }
+
+        static void Example1()
+        {
+            var items = Enumerable.Range(1, 100).Select(x => new
+            {
+                Prop1 = $"Text #{x}",
+                Prop2 = x * 1000,
+                Prop3 = DateTime.Now.AddDays(-x),
+            });
+
+            var pdf = items.ToPdf("Example1");
+
+            File.WriteAllBytes(@"..\..\..\..\Examples\example1.pdf", pdf);
+        }
+
+        static void Example2()
+        {
+            var items = Enumerable.Range(1, 100).Select(x => new
+            {
+                Prop1 = $"Text #{x}",
+                Prop2 = x * 1000,
+                Prop3 = DateTime.Now.AddDays(-x),
+            });
+
+            var pdf = items.ToPdf(scheme =>
+            {
+                scheme.Title = "Example2";
+                scheme.PageOrientation = ArrayToPdfOrientations.Portrait;
+                scheme.PageMarginLeft = 15;
+                scheme.AddColumn("MyColumnName #1", x => x.Prop1, 50);
+                scheme.AddColumn("MyColumnName #2", x => $"test:{x.Prop2}");
+                scheme.AddColumn("MyColumnName #3", x => x.Prop3);
+            });
+
+            File.WriteAllBytes(@"..\..\..\..\Examples\example2.pdf", pdf);
+        }
+
 
         static void Test()
         {
             var items = Enumerable.Range(1, 1000).Select(x => new
             {
-                Bool = true,
-                Int = -1,
-                Uint = 1u,
-                Long = 1L,
-                Double = 1.1d,
-                Float = 1.1f,
-                Decimal = 1.1m,
-                DateTime = DateTime.Now,
-                DateTimeOffset = DateTimeOffset.Now,
-                String = $"Text text #{x}",
+                Bool = x % 2 == 0,
+                Int = -x * 100,
+                Uint = (uint)x * 100,
+                Long = (long)x * 100,
+                Double = 1.1d + x,
+                Float = 1.1f + x,
+                Decimal = 1.1m + x,
+                DateTime = DateTime.Now.AddDays(-x),
+                DateTimeOffset = DateTimeOffset.Now.AddDays(-x),
+                String = $"text text text #{x}",
             });
 
-            //var data = ArrayToPdf.CreatePdf(items, "Test");
+            //var data = items.ToPdf("Test");
 
-            var data = items.ToPdf(scheme => scheme
-                .SetTitle("моя тестовая прога")
-                //.setorientation(arraytopdforientations.portrait)
+            var data = items.ToPdf(scheme =>
+            {
+                scheme.Title = "Test";
+
+                //scheme.PageFormat = ArrayToPdfFormats.A3;
+                //scheme.PageOrientation = ArrayToPdfOrientations.Portrait;
+                //scheme.PageMarginTop = 0;
+                //scheme.PageMarginRight = 0;
+                //scheme.PageMarginBottom = 0;
+                //scheme.PageMarginLeft = 0;
+                //scheme.Header = "Page:{PAGE} - {PAGES}";
+                //scheme.HeaderAlignment = ArrayToPdfAlignments.Center;
+                //scheme.HeaderFontSize = 12;
+                //scheme.HeaderFontBold = true;
+                //scheme.HeaderHeight = 8;
+                //scheme.Footer = "Page:{PAGE}";
+                //.SetOrientation(ArrayToPdfOrientations.Portrait)
                 //.SetMargin(0, 0, 0, 0)
                 //.SetFontSize(8)
                 //.SetAlignment(ArrayToPdfAlignments.Left)
@@ -41,7 +94,7 @@ namespace TestConsoleApp
                 //.AddColumn("mycolumn#2", x => x.Bool)
                 //.AddColumn("mycolumn#3", x => x.String)
                 //.AddColumn("mycolumn#4", x => x.DateTime, 80)
-            );
+            });
 
             File.WriteAllBytes(@"..\test.pdf", data);
         }

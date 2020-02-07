@@ -13,48 +13,43 @@ namespace RandomSolutions
             _initDefaultColumns();
         }
 
-        public ArrayToPdfScheme<T> SetTitle(string title)
-        {
-            Title = title;
-            return this;
-        }
 
-        public ArrayToPdfScheme<T> SetOrientation(ArrayToPdfOrientations orientation)
-        {
-            Orientation = orientation;
-            return this;
-        }
+        public string Title;
+        public string Author;
+        public string Subject;
 
-        public ArrayToPdfScheme<T> SetAlignment(ArrayToPdfAlignments alignment)
-        {
-            Alignment = alignment;
-            return this;
-        }
+        public ArrayToPdfOrientations PageOrientation = ArrayToPdfOrientations.Landscape;
+        public ArrayToPdfFormats PageFormat = ArrayToPdfFormats.A4;
+        /// <summary>Margin in Millimeters</summary>
+        public uint PageMarginTop = 5;
+        /// <summary>Margin in Millimeters</summary>
+        public uint PageMarginRight = 5;
+        /// <summary>Margin in Millimeters</summary>
+        public uint PageMarginBottom = 5;
+        /// <summary>Margin in Millimeters</summary>
+        public uint PageMarginLeft = 5;
 
-        /// <summary>
-        /// Page Margins in Millimeters
-        /// </summary>
-        public ArrayToPdfScheme<T> SetMargin(uint top, uint right, uint bottom, uint left)
-        {
-            MarginTop = top;
-            MarginRight = right;
-            MarginBottom = bottom;
-            MarginLeft = left;
-            return this;
-        }
+        public string Header = "{TITLE}\t{PAGE}/{PAGES}";
+        /// <summary>Height in Millimeters</summary>
+        public uint HeaderHeight = 7;
+        /// <summary>FontSize in Points</summary>
+        public uint HeaderFontSize = 10;
+        public bool HeaderFontBold = false;
+        public ArrayToPdfAlignments HeaderAlignment = ArrayToPdfAlignments.Left;
 
-        /// <summary>
-        /// Table font size in Points
-        /// </summary>
-        public ArrayToPdfScheme<T> SetFontSize(uint value)
-        {
-            FontSize = value;
-            return this;
-        }
+        public string Footer;
+        /// <summary>Height in Millimeters</summary>
+        public uint FooterHeight = 7;
+        /// <summary>FontSize in Points</summary>
+        public uint FooterFontSize = 10;
+        public bool FooterFontBold = false;
+        public ArrayToPdfAlignments FooterAlignment = ArrayToPdfAlignments.Left;
 
-        /// <summary>
-        /// Width in Millimeters
-        /// </summary>
+        /// <summary>FontSize in Points</summary>
+        public uint TableFontSize = 8;
+        public ArrayToPdfAlignments TableAlignment = ArrayToPdfAlignments.Center;
+
+        /// <param name="width">in Millimeters</param>
         public ArrayToPdfScheme<T> AddColumn(string name, Func<T, object> value, uint? width = null, ArrayToPdfAlignments? alignment = null)
         {
             (_columns ?? (_columns = new List<Column>())).Add(new Column
@@ -88,14 +83,6 @@ namespace RandomSolutions
         List<Column> _columns;
 
         internal List<Column> Columns => _columns ?? _defaultColumns;
-        internal ArrayToPdfOrientations Orientation = ArrayToPdfOrientations.Landscape;
-        internal ArrayToPdfAlignments Alignment = ArrayToPdfAlignments.Center;
-        internal string Title;
-        internal uint MarginTop = 5;
-        internal uint MarginRight = 5;
-        internal uint MarginBottom = 5;
-        internal uint MarginLeft = 5;
-        internal uint FontSize = 10;
 
         internal class Column
         {

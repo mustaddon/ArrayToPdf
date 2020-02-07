@@ -21,11 +21,6 @@ namespace RandomSolutions
         }
 #endif
 
-        public static byte[] CreatePdf<T>(IEnumerable<T> items, string title = null)
-        {
-            return CreatePdf(items, scheme => scheme.SetTitle(title));
-        }
-
         public static byte[] CreatePdf<T>(IEnumerable<T> items, Action<ArrayToPdfScheme<T>> schemeBuilder)
         {
             var scheme = new ArrayToPdfScheme<T>();
@@ -52,19 +47,29 @@ namespace RandomSolutions
             var document = new Document();
             document.UseCmykColor = true;
             document.Info.Title = scheme.Title;
-            document.DefaultPageSetup.Orientation = (Orientation)scheme.Orientation;
-            document.DefaultPageSetup.HeaderDistance = Unit.FromMillimeter(scheme.MarginTop);
-            document.DefaultPageSetup.FooterDistance = Unit.FromMillimeter(scheme.MarginBottom);
-            document.DefaultPageSetup.TopMargin = Unit.FromMillimeter(scheme.MarginTop + 7);
-            document.DefaultPageSetup.RightMargin = Unit.FromMillimeter(scheme.MarginRight + _tableLeftBias);
-            document.DefaultPageSetup.BottomMargin = Unit.FromMillimeter(scheme.MarginBottom);
-            document.DefaultPageSetup.LeftMargin = Unit.FromMillimeter(scheme.MarginLeft - _tableLeftBias);
+            document.Info.Subject = scheme.Subject;
+            document.Info.Author = scheme.Author;
+
+            document.DefaultPageSetup.PageFormat = (PageFormat)scheme.PageFormat;
+            document.DefaultPageSetup.Orientation = (Orientation)scheme.PageOrientation;
+            document.DefaultPageSetup.HeaderDistance = Unit.FromMillimeter(scheme.PageMarginTop);
+            document.DefaultPageSetup.FooterDistance = Unit.FromMillimeter(scheme.PageMarginBottom);
+            document.DefaultPageSetup.TopMargin = Unit.FromMillimeter(scheme.PageMarginTop + (string.IsNullOrWhiteSpace(scheme.Header) ? 0 : scheme.HeaderHeight));
+            document.DefaultPageSetup.RightMargin = Unit.FromMillimeter(scheme.PageMarginRight + _tableLeftBias);
+            document.DefaultPageSetup.BottomMargin = Unit.FromMillimeter(scheme.PageMarginBottom + (string.IsNullOrWhiteSpace(scheme.Footer) ? 0 : scheme.FooterHeight));
+            document.DefaultPageSetup.LeftMargin = Unit.FromMillimeter(scheme.PageMarginLeft - _tableLeftBias);
+
+            Unit width, height;
+            PageSetup.GetPageSize(document.DefaultPageSetup.PageFormat, out width, out height);
+            document.DefaultPageSetup.PageWidth = width;
+            document.DefaultPageSetup.PageHeight = height;
 
             var innerWidth = Unit.FromPoint(document.DefaultPageSetup.GetWidth() - document.DefaultPageSetup.LeftMargin - document.DefaultPageSetup.RightMargin);
 
             _addStyles(document, innerWidth);
             _addSection(document);
             _addHeader(document, innerWidth, scheme);
+            _addFooter(document, innerWidth, scheme);
             _addTable(document, innerWidth, items, scheme);
 
             return document;
@@ -73,6 +78,9 @@ namespace RandomSolutions
         static void _addStyles(Document document, Unit innerWidth)
         {
             var style = document.Styles[StyleNames.Header];
+            style.ParagraphFormat.AddTabStop(Unit.FromMillimeter(innerWidth.Millimeter + _tableLeftBias), TabAlignment.Right);
+
+            style = document.Styles[StyleNames.Footer];
             style.ParagraphFormat.AddTabStop(Unit.FromMillimeter(innerWidth.Millimeter + _tableLeftBias), TabAlignment.Right);
         }
 
@@ -84,13 +92,50 @@ namespace RandomSolutions
 
         static void _addHeader<T>(Document document, Unit innerWidth, ArrayToPdfScheme<T> scheme)
         {
+            if (string.IsNullOrWhiteSpace(scheme.Header))
+                return;
+
             var header = document.LastSection.Headers.Primary;
-            var paragraph = header.AddParagraph(scheme.Title ?? string.Empty);
+            var paragraph = header.AddParagraph();
             paragraph.Format.LeftIndent = Unit.FromMillimeter(_tableLeftBias);
-            paragraph.AddTab();
-            paragraph.AddPageField();
-            paragraph.AddText("/");
-            paragraph.AddNumPagesField();
+            paragraph.Format.Alignment = (ParagraphAlignment)scheme.HeaderAlignment;
+            paragraph.Format.Font.Size = scheme.HeaderFontSize;
+            paragraph.Format.Font.Bold = scheme.HeaderFontBold;
+            _addTmpText(paragraph, scheme.Header, scheme);
+        }
+
+        static void _addFooter<T>(Document document, Unit innerWidth, ArrayToPdfScheme<T> scheme)
+        {
+            if (string.IsNullOrWhiteSpace(scheme.Footer))
+                return;
+
+            var footer = document.LastSection.Footers.Primary;
+            var paragraph = footer.AddParagraph();
+            paragraph.Format.LeftIndent = Unit.FromMillimeter(_tableLeftBias);
+            paragraph.Format.Alignment = (ParagraphAlignment)scheme.FooterAlignment;
+            paragraph.Format.Font.Size = scheme.FooterFontSize;
+            paragraph.Format.Font.Bold = scheme.FooterFontBold;
+            _addTmpText(paragraph, scheme.Footer, scheme);
+        }
+
+        static void _addTmpText<T>(Paragraph paragraph, string template, ArrayToPdfScheme<T> scheme)
+        {
+            foreach (var part in template.Split(new[] { '{', '}' }, StringSplitOptions.RemoveEmptyEntries))
+                switch (part)
+                {
+                    case "TITLE":
+                        paragraph.AddText(scheme.Title ?? string.Empty);
+                        break;
+                    case "PAGE":
+                        paragraph.AddPageField();
+                        break;
+                    case "PAGES":
+                        paragraph.AddNumPagesField();
+                        break;
+                    default:
+                        paragraph.AddText(part);
+                        break;
+                }
         }
 
         static void _addTable<T>(Document document, Unit innerWidth, IEnumerable<T> items, ArrayToPdfScheme<T> scheme)
@@ -99,7 +144,7 @@ namespace RandomSolutions
                 return;
 
             var table = new Table();
-            table.Format.Font.Size = Unit.FromPoint(scheme.FontSize);
+            table.Format.Font.Size = Unit.FromPoint(scheme.TableFontSize);
             table.Borders.Width = 0.5;
 
 
@@ -109,7 +154,7 @@ namespace RandomSolutions
             var autoWidth = (innerWidth.Millimeter - settedWidth) / (autoWidthCount > 0 ? autoWidthCount : 1);
 
             // create columns
-            scheme.Columns.ForEach(x => table.AddColumn(Unit.FromMillimeter(x.Width ?? autoWidth)).Format.Alignment = (ParagraphAlignment)(x.Alignment ?? scheme.Alignment));
+            scheme.Columns.ForEach(x => table.AddColumn(Unit.FromMillimeter(x.Width ?? autoWidth)).Format.Alignment = (ParagraphAlignment)(x.Alignment ?? scheme.TableAlignment));
 
             // add header
             var row = table.AddRow();
@@ -141,5 +186,6 @@ namespace RandomSolutions
             //table.SetEdge(0, 0, scheme.Columns.Count, itemsCount+1, Edge.Box, BorderStyle.Single, 1, Colors.Black);
             document.LastSection.Add(table);
         }
+
     }
 }
