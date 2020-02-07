@@ -68,32 +68,23 @@ namespace TestConsoleApp
                 String = $"text text text #{x}",
             });
 
-            //var data = items.ToPdf("Test");
-
             var data = items.ToPdf(scheme =>
             {
                 scheme.Title = "Test";
 
                 //scheme.PageFormat = ArrayToPdfFormats.A3;
                 //scheme.PageOrientation = ArrayToPdfOrientations.Portrait;
-                //scheme.PageMarginTop = 0;
-                //scheme.PageMarginRight = 0;
-                //scheme.PageMarginBottom = 0;
-                //scheme.PageMarginLeft = 0;
-                //scheme.Header = "Page:{PAGE} - {PAGES}";
+                //scheme.SetPageMargin(0, 0, 0, 0);
+                //scheme.Header = "Page:{PAGE}";
                 //scheme.HeaderAlignment = ArrayToPdfAlignments.Center;
                 //scheme.HeaderFontSize = 12;
                 //scheme.HeaderFontBold = true;
                 //scheme.HeaderHeight = 8;
-                //scheme.Footer = "Page:{PAGE}";
-                //.SetOrientation(ArrayToPdfOrientations.Portrait)
-                //.SetMargin(0, 0, 0, 0)
-                //.SetFontSize(8)
-                //.SetAlignment(ArrayToPdfAlignments.Left)
-                //.AddColumn("mycolumn#1", x => x.Int)
-                //.AddColumn("mycolumn#2", x => x.Bool)
-                //.AddColumn("mycolumn#3", x => x.String)
-                //.AddColumn("mycolumn#4", x => x.DateTime, 80)
+                //scheme.Footer = "\tPage:{PAGE}";
+                //scheme.AddColumn("mycolumn#1", x => x.Int);
+                //scheme.AddColumn("mycolumn#2", x => x.Bool);
+                //scheme.AddColumn("mycolumn#3", x => x.String);
+                //scheme.AddColumn("mycolumn#4", x => x.DateTime, 80);
             });
 
             File.WriteAllBytes(@"..\test.pdf", data);
