@@ -164,7 +164,7 @@ namespace RandomSolutions
             row.Format.Font.Bold = true;
             row.Shading.Color = Colors.LightGray;
             row.VerticalAlignment = VerticalAlignment.Center;
-            scheme.Columns.ForEach(x => row.Cells[x.Index].AddParagraph(x.Name));
+            scheme.Columns.ForEach(x => row.Cells[x.Index].AddParagraph(x.Name ?? string.Empty));
 
             // add rows
             //var itemsCount = 0;
@@ -179,7 +179,7 @@ namespace RandomSolutions
                 {
                     var value = col.ValueFn(item);
                     var cell = row.Cells[col.Index];
-                    cell.AddParagraph(value.ToString());
+                    cell.AddParagraph(value?.ToString() ?? string.Empty);
                 }
             }
 
