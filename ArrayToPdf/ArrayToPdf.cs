@@ -21,10 +21,10 @@ namespace RandomSolutions
         }
 #endif
 
-        public static byte[] CreatePdf<T>(IEnumerable<T> items, Action<ArrayToPdfScheme<T>> schemeBuilder)
+        public static byte[] CreatePdf<T>(IEnumerable<T> items, Action<ArrayToPdfScheme<T>> schemeBuilder = null)
         {
             var scheme = new ArrayToPdfScheme<T>();
-            schemeBuilder.Invoke(scheme);
+            schemeBuilder?.Invoke(scheme);
             return _createPdf(items, scheme);
         }
 
