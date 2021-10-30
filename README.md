@@ -15,7 +15,7 @@ var pdf = items.ToPdf("Example1");
 ```
 
 Result: 
-[example1.pdf](Examples/example1.pdf?raw=true)
+[example1.pdf](https://github.com/mustaddon/ArrayToPdf/raw/master/Examples/example1.pdf)
 
 
 ### Example #2
@@ -33,7 +33,7 @@ var pdf = items.ToPdf(scheme =>
 ```
 
 Result: 
-[example2.pdf](Examples/example2.pdf?raw=true)
+[example2.pdf](https://github.com/mustaddon/ArrayToPdf/raw/master/Examples/example2.pdf)
 
 
-[More info in the test console application...](TestConsoleApp/Program.cs)
+[More info in the test console application...](https://github.com/mustaddon/ArrayToPdf/tree/master/TestConsoleApp/)
