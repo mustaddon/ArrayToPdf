@@ -20,7 +20,7 @@ Result:
 
 ### Example 2: Rename title and columns
 ```C#
-var pdf = SomeItems.ToPdf(schema => schema
+var pdf = items.ToPdf(schema => schema
     .Title("Example name")
     .ColumnName(m => m.Name.Replace("Prop", "Column #")));
 ```
@@ -30,7 +30,7 @@ Result:
 
 ### Example 3: Sort columns
 ```C#
-var pdf = SomeItems.ToPdf(schema => schema
+var pdf = items.ToPdf(schema => schema
     .ColumnSort(m => m.Name, desc: true));
 ```
 Result: 
@@ -39,7 +39,7 @@ Result:
 
 ### Example 4: Custom column's mapping
 ```C#
-var pdf = SomeItems.ToPdf(schema => schema
+var pdf = items.ToPdf(schema => schema
     .PageOrientation(ArrayToPdfOrientations.Portrait)
     .PageMarginLeft(15)
     .AddColumn("MyColumnName #1", x => x.Prop1, 30)
@@ -52,7 +52,7 @@ Result:
 
 ### Example 5: Filter columns
 ```C#
-var pdf = SomeItems.ToPdf(schema => schema
+var pdf = items.ToPdf(schema => schema
     .ColumnFilter(m => m.Name != "Prop2"));
 ```
 Result: 
