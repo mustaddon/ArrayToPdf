@@ -1,9 +1,10 @@
 # ArrayToPdf [![NuGet version](https://badge.fury.io/nu/ArrayToPdf.svg)](http://badge.fury.io/nu/ArrayToPdf)
 Create PDF from Array
 
-### Example #1
-
+### Example 1: Create with default settings
 ```C#
+using ArrayToPdf;
+
 var items = Enumerable.Range(1, 100).Select(x => new
 {
     Prop1 = $"Text #{x}",
@@ -11,29 +12,51 @@ var items = Enumerable.Range(1, 100).Select(x => new
     Prop3 = DateTime.Now.AddDays(-x),
 });
 
-var pdf = items.ToPdf("Example1");
+var pdf = items.ToPdf();
 ```
-
 Result: 
 [example1.pdf](https://github.com/mustaddon/ArrayToPdf/raw/master/Examples/example1.pdf)
 
 
-### Example #2
-
+### Example 2: Rename title and columns
 ```C#
-var pdf = items.ToPdf(scheme =>
-{
-    scheme.Title = "Example2";
-    scheme.PageOrientation = ArrayToPdfOrientations.Portrait;
-    scheme.PageMarginLeft = 15;
-    scheme.AddColumn("MyColumnName #1", x => x.Prop1, 50);
-    scheme.AddColumn("MyColumnName #2", x => $"test:{x.Prop2}");
-    scheme.AddColumn("MyColumnName #3", x => x.Prop3);
-});
+var pdf = SomeItems.ToPdf(schema => schema
+    .Title("Example name")
+    .ColumnName(m => m.Name.Replace("Prop", "Column #")));
 ```
-
 Result: 
 [example2.pdf](https://github.com/mustaddon/ArrayToPdf/raw/master/Examples/example2.pdf)
 
 
-[More info in the test console application...](https://github.com/mustaddon/ArrayToPdf/tree/master/TestConsoleApp/)
+### Example 3: Sort columns
+```C#
+var pdf = SomeItems.ToPdf(schema => schema
+    .ColumnSort(m => m.Name, desc: true));
+```
+Result: 
+[example3.pdf](https://github.com/mustaddon/ArrayToPdf/raw/master/Examples/example3.pdf)
+
+
+### Example 4: Custom column's mapping
+```C#
+var pdf = SomeItems.ToPdf(schema => schema
+    .PageOrientation(ArrayToPdfOrientations.Portrait)
+    .PageMarginLeft(15)
+    .AddColumn("MyColumnName #1", x => x.Prop1, 30)
+    .AddColumn("MyColumnName #2", x => $"test:{x.Prop2}")
+    .AddColumn("MyColumnName #3", x => x.Prop3));
+```
+Result: 
+[example4.pdf](https://github.com/mustaddon/ArrayToPdf/raw/master/Examples/example4.pdf)
+
+
+### Example 5: Filter columns
+```C#
+var pdf = SomeItems.ToPdf(schema => schema
+    .ColumnFilter(m => m.Name != "Prop2"));
+```
+Result: 
+[example5.pdf](https://github.com/mustaddon/ArrayToPdf/raw/master/Examples/example5.pdf)
+
+
+[Example.ConsoleApp](https://github.com/mustaddon/ArrayToPdf/tree/master/Examples/Example.ConsoleApp/)
