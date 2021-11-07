@@ -20,8 +20,8 @@ namespace ArrayToPdf
         public string? Author { get; set; }
         public string? Subject { get; set; }
 
-        public ArrayToPdfOrientations PageOrientation { get; set; } = DefaultPageOrientation;
-        public ArrayToPdfFormats PageFormat { get; set; } = DefaultPageFormat;
+        public PdfOrientations PageOrientation { get; set; } = DefaultPageOrientation;
+        public PdfFormats PageFormat { get; set; } = DefaultPageFormat;
 
         public uint PageMarginTop { get; set; } = DefaultPageMargin;
         public uint PageMarginRight { get; set; } = DefaultPageMargin;
@@ -32,28 +32,28 @@ namespace ArrayToPdf
         public uint HeaderHeight { get; set; } = DefaultHeaderHeight;
         public uint HeaderFontSize { get; set; } = DefaultHeaderFontSize;
         public bool HeaderFontBold { get; set; } = DefaultHeaderFontBold;
-        public ArrayToPdfAlignments HeaderAlignment { get; set; } = DefaultHeaderAlignment;
+        public PdfAlignments HeaderAlignment { get; set; } = DefaultHeaderAlignment;
 
         public string? Footer { get; set; }
         public uint FooterHeight { get; set; } = DefaultHeaderHeight;
         public uint FooterFontSize { get; set; } = DefaultHeaderFontSize;
         public bool FooterFontBold { get; set; } = DefaultHeaderFontBold;
-        public ArrayToPdfAlignments FooterAlignment { get; set; } = DefaultHeaderAlignment;
+        public PdfAlignments FooterAlignment { get; set; } = DefaultHeaderAlignment;
         public uint TableFontSize { get; set; } = DefaultTableFontSize;
-        public ArrayToPdfAlignments TableAlignment { get; set; } = DefaultTableAlignment;
+        public PdfAlignments TableAlignment { get; set; } = DefaultTableAlignment;
 
 
 
-        public const ArrayToPdfOrientations DefaultPageOrientation = ArrayToPdfOrientations.Landscape;
-        public const ArrayToPdfFormats DefaultPageFormat = ArrayToPdfFormats.A4;
+        public const PdfOrientations DefaultPageOrientation = PdfOrientations.Landscape;
+        public const PdfFormats DefaultPageFormat = PdfFormats.A4;
         public const string DefaultHeader = "{TITLE}\t{PAGE}/{PAGES}";
         public const uint DefaultPageMargin = 5;
         public const uint DefaultHeaderHeight = 7;
         public const uint DefaultHeaderFontSize = 10;
         public const bool DefaultHeaderFontBold = false;
-        public const ArrayToPdfAlignments DefaultHeaderAlignment = ArrayToPdfAlignments.Left;
+        public const PdfAlignments DefaultHeaderAlignment = PdfAlignments.Left;
         public const uint DefaultTableFontSize = 8;
-        public const ArrayToPdfAlignments DefaultTableAlignment = ArrayToPdfAlignments.Center;
+        public const PdfAlignments DefaultTableAlignment = PdfAlignments.Center;
     }
 
     internal class ColumnSchema
@@ -62,6 +62,6 @@ namespace ArrayToPdf
         public uint? Width { get; set; }
         public string Name { get; set; } = string.Empty;
         public Func<object, object?>? Value { get; set; }
-        public ArrayToPdfAlignments? Alignment { get; set; }
+        public PdfAlignments? Alignment { get; set; }
     }
 }

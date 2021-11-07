@@ -20,8 +20,8 @@ namespace ArrayToPdf
         public SchemaBuilder<T> Title(string? title) { Schema.Title = title; return this; }
         public SchemaBuilder<T> Author(string? author) { Schema.Author = author; return this; }
         public SchemaBuilder<T> Subject(string? subject) { Schema.Subject = subject; return this; }
-        public SchemaBuilder<T> PageOrientation(ArrayToPdfOrientations value = Schema.DefaultPageOrientation) { Schema.PageOrientation = value; return this; }
-        public SchemaBuilder<T> PageFormat(ArrayToPdfFormats value = Schema.DefaultPageFormat) { Schema.PageFormat = value; return this; }
+        public SchemaBuilder<T> PageOrientation(PdfOrientations value = Schema.DefaultPageOrientation) { Schema.PageOrientation = value; return this; }
+        public SchemaBuilder<T> PageFormat(PdfFormats value = Schema.DefaultPageFormat) { Schema.PageFormat = value; return this; }
 
         /// <summary>Margin in Millimeters</summary>
         public SchemaBuilder<T> PageMarginTop(uint value = Schema.DefaultPageMargin) { Schema.PageMarginTop = value; return this; }
@@ -43,7 +43,7 @@ namespace ArrayToPdf
         /// <summary>FontSize in Points</summary>
         public SchemaBuilder<T> HeaderFontSize(uint value = Schema.DefaultHeaderFontSize) { Schema.HeaderFontSize = value; return this; }
         public SchemaBuilder<T> HeaderFontBold(bool value = Schema.DefaultHeaderFontBold) { Schema.HeaderFontBold = value; return this; }
-        public SchemaBuilder<T> HeaderAlignment(ArrayToPdfAlignments value = Schema.DefaultHeaderAlignment) { Schema.HeaderAlignment = value; return this; }
+        public SchemaBuilder<T> HeaderAlignment(PdfAlignments value = Schema.DefaultHeaderAlignment) { Schema.HeaderAlignment = value; return this; }
 
         public SchemaBuilder<T> Footer(string? value) { Schema.Footer = value; return this; }
 
@@ -53,11 +53,11 @@ namespace ArrayToPdf
         /// <summary>FontSize in Points</summary>
         public SchemaBuilder<T> FooterFontSize(uint value = Schema.DefaultHeaderFontSize) { Schema.FooterFontSize = value; return this; }
         public SchemaBuilder<T> FooterFontBold(bool value = Schema.DefaultHeaderFontBold) { Schema.FooterFontBold = value; return this; }
-        public SchemaBuilder<T> FooterAlignment(ArrayToPdfAlignments value = Schema.DefaultHeaderAlignment) { Schema.FooterAlignment = value; return this; }
+        public SchemaBuilder<T> FooterAlignment(PdfAlignments value = Schema.DefaultHeaderAlignment) { Schema.FooterAlignment = value; return this; }
 
         /// <summary>FontSize in Points</summary>
         public SchemaBuilder<T> TableFontSize(uint value = Schema.DefaultTableFontSize) { Schema.TableFontSize = value; return this; }
-        public SchemaBuilder<T> TableAlignment(ArrayToPdfAlignments value = Schema.DefaultTableAlignment) { Schema.TableAlignment = value; return this; }
+        public SchemaBuilder<T> TableAlignment(PdfAlignments value = Schema.DefaultTableAlignment) { Schema.TableAlignment = value; return this; }
 
 
         public SchemaBuilder<T> ColumnName(Func<ColumnInfo, string> name)
@@ -74,7 +74,7 @@ namespace ArrayToPdf
             return this;
         }
 
-        public SchemaBuilder<T> ColumnAlignment(Func<ColumnInfo, ArrayToPdfAlignments?> alignment)
+        public SchemaBuilder<T> ColumnAlignment(Func<ColumnInfo, PdfAlignments?> alignment)
         {
             foreach (var col in Schema.Columns.Select((x, i) => new ColumnInfo(i, x)))
                 col.Schema.Alignment = alignment(col);

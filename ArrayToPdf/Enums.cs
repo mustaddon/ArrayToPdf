@@ -1,12 +1,12 @@
 ﻿namespace ArrayToPdf
 {
-    public enum ArrayToPdfOrientations
+    public enum PdfOrientations
     {
         Portrait = 0,
         Landscape = 1
     }
 
-    public enum ArrayToPdfFormats
+    public enum PdfFormats
     {
         A0 = 0,
         A1 = 1,
@@ -22,7 +22,7 @@
         P11x17 = 11
     }
 
-    public enum ArrayToPdfAlignments
+    public enum PdfAlignments
     {
         Left = 0,
         Center = 1,

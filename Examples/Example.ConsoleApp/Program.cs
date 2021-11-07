@@ -59,7 +59,7 @@ namespace ConsoleApp
         static void Example4()
         {
             var pdf = SomeItems.ToPdf(schema => schema
-                .PageOrientation(ArrayToPdfOrientations.Portrait)
+                .PageOrientation(PdfOrientations.Portrait)
                 .PageMarginLeft(15)
                 .AddColumn("MyColumnName #1", x => x.Prop1, 30)
                 .AddColumn("MyColumnName #2", x => $"test:{x.Prop2}")
