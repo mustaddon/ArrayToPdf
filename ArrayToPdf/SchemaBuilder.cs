@@ -60,46 +60,53 @@ namespace ArrayToPdf
         public SchemaBuilder<T> TableAlignment(ArrayToPdfAlignments value = Schema.DefaultTableAlignment) { Schema.TableAlignment = value; return this; }
 
 
-        public SchemaBuilder<T> ColumnName(Func<MemberInfo, string> name)
+        public SchemaBuilder<T> ColumnName(Func<ColumnInfo, string> name)
         {
-            foreach (var col in Schema.Columns)
-                if (col.Member != null)
-                    col.Name = name(col.Member);
+            foreach (var col in Schema.Columns.Select((x, i) => new ColumnInfo(i, x)))
+                col.Schema.Name = name(col);
             return this;
         }
 
-        public SchemaBuilder<T> ColumnWidth(Func<MemberInfo, uint> width)
+        public SchemaBuilder<T> ColumnWidth(Func<ColumnInfo, uint?> width)
         {
-            foreach (var col in Schema.Columns)
-                if (col.Member != null)
-                    col.Width = width(col.Member);
+            foreach (var col in Schema.Columns.Select((x, i) => new ColumnInfo(i, x)))
+                col.Schema.Width = width(col);
             return this;
         }
 
-        public SchemaBuilder<T> ColumnFilter(Func<MemberInfo, bool> filter)
+        public SchemaBuilder<T> ColumnAlignment(Func<ColumnInfo, ArrayToPdfAlignments?> alignment)
         {
-            Schema.Columns = Schema.Columns.Where(x => x.Member == null || filter(x.Member)).ToList();
+            foreach (var col in Schema.Columns.Select((x, i) => new ColumnInfo(i, x)))
+                col.Schema.Alignment = alignment(col);
             return this;
         }
 
-        public SchemaBuilder<T> ColumnSort<TKey>(Func<MemberInfo, TKey> sort, bool desc = false)
+        public SchemaBuilder<T> ColumnFilter(Func<ColumnInfo, bool> filter)
         {
-            if (!_defaultCols)
-                return this;
+            Schema.Columns = Schema.Columns
+                .Select((x, i) => new ColumnInfo(i, x))
+                .Where(x => filter(x))
+                .Select(x => x.Schema)
+                .ToList();
+            return this;
+        }
+
+        public SchemaBuilder<T> ColumnSort<TKey>(Func<ColumnInfo, TKey> sort, bool desc = false)
+        {
+            var colInfos = Schema.Columns.Select((x, i) => new ColumnInfo(i, x)).ToList();
 
             Schema.Columns = (desc
-                ? Schema.Columns.OrderByDescending(x => x.Member != null ? sort(x.Member) : default)
-                : Schema.Columns.OrderBy(x => x.Member != null ? sort(x.Member) : default)
-            ).ToList();
+                ? colInfos.OrderByDescending(sort)
+                : colInfos.OrderBy(sort)
+            ).Select(x => x.Schema).ToList();
 
             return this;
         }
 
-        public SchemaBuilder<T> ColumnValue(Func<MemberInfo, T, object?> value)
+        public SchemaBuilder<T> ColumnValue(Func<ColumnInfo, T, object?> value)
         {
-            foreach (var col in Schema.Columns)
-                if (col.Member != null)
-                    col.Value = x => value(col.Member, (T)x);
+            foreach (var col in Schema.Columns.Select((x, i) => new ColumnInfo(i, x)))
+                col.Schema.Value = x => value(col, (T)x);
             return this;
         }
 
