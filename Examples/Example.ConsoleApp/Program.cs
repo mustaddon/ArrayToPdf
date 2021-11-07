@@ -112,7 +112,7 @@ namespace ConsoleApp
 
             var pdf = items.ToPdf();
 
-            File.WriteAllBytes($@"..\{nameof(TestDictionary)}.pdf".ToLower(), pdf);
+            File.WriteAllBytes($@"..\{nameof(TestDictionary)}.pdf", pdf);
         }
 
         // list of expandos 
