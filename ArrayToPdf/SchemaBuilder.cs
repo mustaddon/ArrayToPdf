@@ -6,9 +6,9 @@ using System.Reflection;
 
 namespace ArrayToPdf
 {
-    public class SchemaBuilder<T>
+    public sealed class SchemaBuilder<T>
     {
-        public SchemaBuilder(IEnumerable items)
+        internal SchemaBuilder(IEnumerable items)
         {
             Schema = new(DefaultColumns(items), items);
         }
