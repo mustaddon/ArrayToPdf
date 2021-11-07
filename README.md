@@ -67,7 +67,7 @@ table.Columns.Add("Column #1", typeof(string));
 table.Columns.Add("Column #2", typeof(int));
 table.Columns.Add("Column #3", typeof(DateTime));
 
-foreach (var x in Enumerable.Range(1, 100))
+for (var x = 1; x <= 100; x++)
     table.Rows.Add($"Text #{x}", x * 1000, DateTime.Now.AddDays(-x));
 
 var pdf = table.ToPdf();
