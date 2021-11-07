@@ -6,17 +6,17 @@
     <Nullable>enable</Nullable>
     <SignAssembly>True</SignAssembly>
     <AssemblyOriginatorKeyFile>..\ArrayToPdf.snk</AssemblyOriginatorKeyFile>
-	<AssemblyVersion>2.0.2</AssemblyVersion>
-    <FileVersion>2.0.2</FileVersion>
-    <Version>2.0.2</Version>
+	<AssemblyVersion>2.0.3</AssemblyVersion>
+    <FileVersion>2.0.3</FileVersion>
+    <Version>2.0.3</Version>
 	<Company></Company>
     <Authors>Leonid Salavatov</Authors>
     <Copyright>Leonid Salavatov 2021</Copyright>
     <PackageId>ArrayToPdf</PackageId>
     <Product>ArrayToPdf</Product>
     <Title>ArrayToPdf</Title>
-    <Description>Create PDF from Array</Description>
-    <PackageTags>array pdf array2pdf arraytopdf convert map mapping dotnet</PackageTags>
+    <Description>Create PDF from Array (List, DataTable, ...)</Description>
+    <PackageTags>pdf array2pdf arraytopdf array list dataset datatable convert map mapping dotnet</PackageTags>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <PackageProjectUrl>https://github.com/mustaddon/ArrayToPdf</PackageProjectUrl>
     <RepositoryUrl>https://github.com/mustaddon/ArrayToPdf</RepositoryUrl>
@@ -36,8 +36,8 @@
   </PropertyGroup>
 
   <ItemGroup Condition="'$(TargetFramework)' == 'netstandard2.0'">
-    <PackageReference Include="PdfSharp.MigraDoc.Standard" Version="1.51.9" />
-    <PackageReference Include="System.Text.Encoding.CodePages" Version="4.7.0" />
+    <PackageReference Include="PdfSharp.MigraDoc.Standard" Version="1.51.15" />
+    <PackageReference Include="System.Text.Encoding.CodePages" Version="5.0.0" />
   </ItemGroup>
 
   <ItemGroup Condition="'$(TargetFramework)' == 'net45'">

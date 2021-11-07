@@ -1,5 +1,5 @@
 # ArrayToPdf [![NuGet version](https://badge.fury.io/nu/ArrayToPdf.svg)](http://badge.fury.io/nu/ArrayToPdf)
-Create PDF from Array
+Create PDF from Array (List, DataTable, ...)
 
 ### Example 1: Create with default settings
 ```C#
@@ -57,6 +57,23 @@ var pdf = items.ToPdf(schema => schema
 ```
 Result: 
 [example5.pdf](https://github.com/mustaddon/ArrayToPdf/raw/master/Examples/example5.pdf)
+
+
+### Example 6: Create from DataTable
+```C#
+var table = new DataTable("Example Table");
+
+table.Columns.Add("Column #1", typeof(string));
+table.Columns.Add("Column #2", typeof(int));
+table.Columns.Add("Column #3", typeof(DateTime));
+
+foreach (var x in Enumerable.Range(1, 100))
+    table.Rows.Add($"Text #{x}", x * 1000, DateTime.Now.AddDays(-x));
+
+var pdf = table.ToPdf();
+```
+Result: 
+[example6.pdf](https://github.com/mustaddon/ArrayToPdf/raw/master/Examples/example6.pdf)
 
 
 [Example.ConsoleApp](https://github.com/mustaddon/ArrayToPdf/tree/master/Examples/Example.ConsoleApp/)

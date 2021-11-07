@@ -1,6 +1,8 @@
 ﻿using ArrayToPdf;
 using System;
+using System.Collections;
 using System.Collections.Generic;
+using System.Data;
 using System.Dynamic;
 using System.IO;
 using System.Linq;
@@ -17,7 +19,11 @@ namespace ConsoleApp
             Example4();
             Example5();
             Example6();
-            Example7();
+
+            TestDictionary();
+            TestExpandoObject();
+            TestHashtable();
+            TestDataSet();
             TestTypes();
         }
 
@@ -77,8 +83,25 @@ namespace ConsoleApp
             File.WriteAllBytes($@"..\..\..\..\{nameof(Example5)}.pdf".ToLower(), pdf);
         }
 
-        // list of dictionaries 
+        // DataTable
         static void Example6()
+        {
+            var table = new DataTable("Example Table");
+
+            table.Columns.Add("Column #1", typeof(string));
+            table.Columns.Add("Column #2", typeof(int));
+            table.Columns.Add("Column #3", typeof(DateTime));
+
+            foreach (var x in Enumerable.Range(1, 100))
+                table.Rows.Add($"Text #{x}", x * 1000, DateTime.Now.AddDays(-x));
+
+            var pdf = table.ToPdf();
+
+            File.WriteAllBytes($@"..\..\..\..\{nameof(Example6)}.pdf".ToLower(), pdf);
+        }
+
+        // list of dictionaries 
+        static void TestDictionary()
         {
             var items = Enumerable.Range(1, 100).Select(x => new Dictionary<object, object>
             {
@@ -89,11 +112,11 @@ namespace ConsoleApp
 
             var pdf = items.ToPdf();
 
-            File.WriteAllBytes($@"..\..\..\..\{nameof(Example6)}.pdf".ToLower(), pdf);
+            File.WriteAllBytes($@"..\{nameof(TestDictionary)}.pdf".ToLower(), pdf);
         }
 
         // list of expandos 
-        static void Example7()
+        static void TestExpandoObject()
         {
             var items = Enumerable.Range(1, 100).Select(x =>
             {
@@ -107,7 +130,47 @@ namespace ConsoleApp
 
             var pdf = items.ToPdf();
 
-            File.WriteAllBytes($@"..\..\..\..\{nameof(Example7)}.pdf".ToLower(), pdf);
+            File.WriteAllBytes($@"..\{nameof(TestExpandoObject)}.pdf", pdf);
+        }
+
+        // list of hashtables
+        static void TestHashtable()
+        {
+            var items = Enumerable.Range(1, 100).Select(x =>
+            {
+                var item = new Hashtable();
+                item.Add("Column #1", $"Text #{x}");
+                item.Add("Column #2", x * 1000);
+                item.Add("Column #3", DateTime.Now.AddDays(-x));
+                return item;
+            });
+
+            var pdf = items.ToPdf();
+
+            File.WriteAllBytes($@"..\{nameof(TestHashtable)}.pdf", pdf);
+        }
+
+        // DataSet
+        static void TestDataSet()
+        {
+            var dataSet = new DataSet();
+
+            foreach (var i in Enumerable.Range(1, 3))
+            {
+                var table = new DataTable($"Table{i}");
+                dataSet.Tables.Add(table);
+
+                table.Columns.Add($"Column {i}-1", typeof(string));
+                table.Columns.Add($"Column {i}-2", typeof(int));
+                table.Columns.Add($"Column {i}-3", typeof(DateTime));
+
+                foreach (var x in Enumerable.Range(1, 10 * i))
+                    table.Rows.Add($"Text #{x}", x * 1000, DateTime.Now.AddDays(-x));
+            }
+
+            var pdf = dataSet.ToPdf();
+
+            File.WriteAllBytes($@"..\{nameof(TestDataSet)}.pdf", pdf);
         }
 
         static void TestTypes()
