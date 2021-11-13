@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Data;
+using System.IO;
 
 namespace ArrayToPdf
 {
@@ -9,15 +10,33 @@ namespace ArrayToPdf
     {
         public static byte[] ToPdf<T>(this IEnumerable<T> items, Action<SchemaBuilder<T>>? schema = null)
         {
-            return ArrayToPdf.CreatePdf(items, schema);
+            using var ms = ToPdfStream(items, schema);
+            return ms.ToArray();
         }
 
         public static byte[] ToPdf(this DataSet dataSet, Action<SchemaBuilder<DataRow>>? schema = null)
         {
-            return ToPdf(dataSet.Tables[0], schema);
+            using var ms = ToPdfStream(dataSet, schema);
+            return ms.ToArray();
         }
 
         public static byte[] ToPdf(this DataTable dataTable, Action<SchemaBuilder<DataRow>>? schema = null)
+        {
+            using var ms = ToPdfStream(dataTable, schema);
+            return ms.ToArray();
+        }
+
+        public static MemoryStream ToPdfStream<T>(this IEnumerable<T> items, Action<SchemaBuilder<T>>? schema = null)
+        {
+            return ArrayToPdf.CreatePdf(items, schema);
+        }
+
+        public static MemoryStream ToPdfStream(this DataSet dataSet, Action<SchemaBuilder<DataRow>>? schema = null)
+        {
+            return ToPdfStream(dataSet.Tables[0], schema);
+        }
+
+        public static MemoryStream ToPdfStream(this DataTable dataTable, Action<SchemaBuilder<DataRow>>? schema = null)
         {
             return ArrayToPdf.CreatePdf(dataTable.Rows.AsEnumerable(), builder =>
             {

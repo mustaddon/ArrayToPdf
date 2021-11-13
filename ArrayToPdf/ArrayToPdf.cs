@@ -11,30 +11,29 @@ namespace ArrayToPdf
 {
     public class ArrayToPdf
     {
-#if STANDARD
+#if !NET45
         static ArrayToPdf()
         {
             Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
         }
 #endif
 
-        public static byte[] CreatePdf<T>(IEnumerable<T> items, Action<SchemaBuilder<T>>? schema = null)
+        public static MemoryStream CreatePdf<T>(IEnumerable<T> items, Action<SchemaBuilder<T>>? schema = null)
         {
             var builder = new SchemaBuilder<T>(items);
             schema?.Invoke(builder);
             return _createPdf(builder.Schema);
         }
 
-        static byte[] _createPdf(Schema schema)
+        static MemoryStream _createPdf(Schema schema)
         {
-            using (var ms = new MemoryStream())
-            {
-                var renderer = new PdfDocumentRenderer(true);
-                renderer.Document = _createDocument(schema);
-                renderer.RenderDocument();
-                renderer.PdfDocument.Save(ms);
-                return ms.ToArray();
-            }
+            var ms = new MemoryStream();
+            var renderer = new PdfDocumentRenderer(true);
+            renderer.Document = _createDocument(schema);
+            renderer.RenderDocument();
+            renderer.PdfDocument.Save(ms);
+            ms.Position = 0;
+            return ms;
         }
 
         static readonly int _tableLeftBias = -1;

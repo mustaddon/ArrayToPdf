@@ -24,6 +24,7 @@ namespace ConsoleApp
             TestExpandoObject();
             TestHashtable();
             TestDataSet();
+            TestObject();
             TestTypes();
         }
 
@@ -173,6 +174,14 @@ namespace ConsoleApp
             File.WriteAllBytes($@"..\{nameof(TestDataSet)}.pdf", pdf);
         }
 
+        // list of objects
+        static void TestObject()
+        {
+            var pdf = SomeItems.AsEnumerable<object>().ToPdf();
+            File.WriteAllBytes($@"..\{nameof(TestObject)}.pdf", pdf);
+        }
+
+        // different types + stream
         static void TestTypes()
         {
             var items = Enumerable.Range(1, 1000).Select(x => new
@@ -190,9 +199,9 @@ namespace ConsoleApp
                 String = $"text text text #{x}",
             });
 
-            var data = items.ToPdf();
-
-            File.WriteAllBytes($@"..\{nameof(TestTypes)}.pdf", data);
+            using var pdf = items.ToPdfStream();
+            using var file = File.Create($@"..\{nameof(TestTypes)}.pdf");
+            pdf.CopyTo(file);
         }
     }
 }
