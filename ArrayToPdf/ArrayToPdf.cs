@@ -116,22 +116,23 @@ namespace ArrayToPdf
 
         static void _addTmpText(Paragraph paragraph, string? template, Schema schema)
         {
-            foreach (var part in template.Split(new[] { '{', '}' }, StringSplitOptions.RemoveEmptyEntries))
-                switch (part)
-                {
-                    case "TITLE":
-                        paragraph.AddText(schema.Title ?? string.Empty);
-                        break;
-                    case "PAGE":
-                        paragraph.AddPageField();
-                        break;
-                    case "PAGES":
-                        paragraph.AddNumPagesField();
-                        break;
-                    default:
-                        paragraph.AddText(part);
-                        break;
-                }
+            if(template != null)
+                foreach (var part in template.Split(new[] { '{', '}' }, StringSplitOptions.RemoveEmptyEntries))
+                    switch (part)
+                    {
+                        case "TITLE":
+                            paragraph.AddText(schema.Title ?? string.Empty);
+                            break;
+                        case "PAGE":
+                            paragraph.AddPageField();
+                            break;
+                        case "PAGES":
+                            paragraph.AddNumPagesField();
+                            break;
+                        default:
+                            paragraph.AddText(part);
+                            break;
+                    }
         }
 
         static void _addTable(Document document, Unit innerWidth, Schema schema)

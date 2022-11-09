@@ -163,15 +163,20 @@ namespace ArrayToPdf
 
                 var result = new List<ColumnSchema>();
 
-                while (dict?.MoveNext() == true)
-                {
-                    var key = dict.Key;
-                    result.Add(new()
+                if (dict != null)
+                    while (dict.MoveNext() == true)
                     {
-                        Name = key.ToString(),
-                        Value = new(x => (x as IDictionary)?[key]),
-                    });
-                }
+                        var key = dict.Key;
+
+                        if (key == null)
+                            continue;
+
+                        result.Add(new()
+                        {
+                            Name = key.ToString()!,
+                            Value = new(x => (x as IDictionary)?[key]),
+                        });
+                    }
 
                 return result;
             }
