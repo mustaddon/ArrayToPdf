@@ -76,4 +76,4 @@ Result:
 [example6.pdf](https://github.com/mustaddon/ArrayToPdf/raw/master/Examples/example6.pdf)
 
 
-[Example.ConsoleApp](https://github.com/mustaddon/ArrayToPdf/tree/master/Examples/Example.ConsoleApp/)
+[Example.ConsoleApp](https://github.com/mustaddon/ArrayToPdf/tree/master/Examples/Example.ConsoleApp/Program.cs)

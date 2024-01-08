@@ -1,17 +1,17 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFrameworks>net45;netstandard2.0;net6.0;net7.0</TargetFrameworks>
+    <TargetFrameworks>net45;netstandard2.0;net6.0;net7.0;net8.0</TargetFrameworks>
 	<LangVersion>latest</LangVersion>
     <Nullable>enable</Nullable>
     <SignAssembly>True</SignAssembly>
     <AssemblyOriginatorKeyFile>..\ArrayToPdf.snk</AssemblyOriginatorKeyFile>
-	<AssemblyVersion>2.0.5</AssemblyVersion>
-    <FileVersion>2.0.5</FileVersion>
-    <Version>2.0.5</Version>
+	<AssemblyVersion>2.1.0</AssemblyVersion>
+    <FileVersion>2.1.0</FileVersion>
+    <Version>2.1.0</Version>
 	<Company></Company>
     <Authors>Leonid Salavatov</Authors>
-    <Copyright>Leonid Salavatov 2022</Copyright>
+    <Copyright>Leonid Salavatov 2024</Copyright>
     <PackageId>ArrayToPdf</PackageId>
     <Product>ArrayToPdf</Product>
     <Title>ArrayToPdf</Title>
@@ -33,7 +33,7 @@
 
   <ItemGroup Condition="'$(TargetFramework)' != 'net45'">
     <PackageReference Include="PdfSharp.MigraDoc.Standard" Version="1.51.15" />
-    <PackageReference Include="System.Text.Encoding.CodePages" Version="7.0.0" />
+    <PackageReference Include="System.Text.Encoding.CodePages" Version="8.0.0" />
   </ItemGroup>
   
 </Project>
