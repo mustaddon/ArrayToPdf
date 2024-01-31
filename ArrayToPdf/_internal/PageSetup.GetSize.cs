@@ -1,8 +1,8 @@
 ﻿using MigraDoc.DocumentObjectModel;
 
-namespace ArrayToPdf;
+namespace ArrayToPdf._internal;
 
-public static partial class Extensions
+internal static partial class PageSetupExt
 {
     internal static Unit GetWidth(this PageSetup pageSetup)
         => pageSetup.Orientation == Orientation.Landscape ? pageSetup.PageHeight : pageSetup.PageWidth;

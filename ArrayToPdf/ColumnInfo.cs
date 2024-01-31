@@ -1,4 +1,5 @@
 ﻿using System.Reflection;
+using ArrayToPdf._internal;
 
 namespace ArrayToPdf;
 

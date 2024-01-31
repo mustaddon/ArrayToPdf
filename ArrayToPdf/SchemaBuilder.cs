@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using ArrayToPdf._internal;
 
 namespace ArrayToPdf;
 
@@ -130,7 +131,7 @@ public sealed class SchemaBuilder<T>
 
     private List<ColumnSchema> DefaultColumns(IEnumerable items)
     {
-        var type = typeof(T);
+        var type = items.GetType().GetElementTypeExt() ?? typeof(T);
 
         if (type == typeof(object))
         {

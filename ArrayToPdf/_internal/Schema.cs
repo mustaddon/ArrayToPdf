@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Reflection;
 
-namespace ArrayToPdf;
+namespace ArrayToPdf._internal;
 
 internal class Schema(List<ColumnSchema> columns, IEnumerable items)
 {

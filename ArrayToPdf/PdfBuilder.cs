@@ -1,4 +1,5 @@
-﻿using MigraDoc.DocumentObjectModel;
+﻿using ArrayToPdf._internal;
+using MigraDoc.DocumentObjectModel;
 using MigraDoc.DocumentObjectModel.Tables;
 using MigraDoc.Rendering;
 using System;
@@ -9,24 +10,24 @@ using System.Text;
 
 namespace ArrayToPdf;
 
-public class ArrayToPdf
+public class PdfBuilder
 {
 #if !NET45
-    static ArrayToPdf()
+    static PdfBuilder()
     {
         Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
     }
 #endif
 
-    public static MemoryStream CreatePdf<T>(IEnumerable<T> items, Action<SchemaBuilder<T>>? schema = null)
+    public static MemoryStream Build<T>(IEnumerable<T> items, Action<SchemaBuilder<T>>? schema = null)
     {
         var ms = new MemoryStream();
-        CreatePdf(ms, items, schema);
+        Build(ms, items, schema);
         ms.Position = 0;
         return ms;
     }
 
-    public static void CreatePdf<T>(Stream stream, IEnumerable<T> items, Action<SchemaBuilder<T>>? schema = null)
+    public static void Build<T>(Stream stream, IEnumerable<T> items, Action<SchemaBuilder<T>>? schema = null)
     {
         var builder = new SchemaBuilder<T>(items);
         schema?.Invoke(builder);
@@ -118,10 +119,12 @@ public class ArrayToPdf
         AddTmpText(paragraph, schema.Footer, schema);
     }
 
+    static readonly char[] _separator = ['{', '}'];
+
     static void AddTmpText(Paragraph paragraph, string? template, Schema schema)
     {
         if(template != null)
-            foreach (var part in template.Split(new[] { '{', '}' }, StringSplitOptions.RemoveEmptyEntries))
+            foreach (var part in template.Split(_separator, StringSplitOptions.RemoveEmptyEntries))
                 switch (part)
                 {
                     case "TITLE":

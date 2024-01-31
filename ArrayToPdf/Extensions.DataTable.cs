@@ -9,7 +9,7 @@ public static partial class Extensions
 {
     public static void ToPdf(this DataTable dataTable, Stream stream, Action<SchemaBuilder<DataRow>>? schema = null)
     {
-        ArrayToPdf.CreatePdf(stream, dataTable.Rows.AsEnumerable(), builder =>
+        PdfBuilder.Build(stream, dataTable.Rows.AsEnumerable(), builder =>
         {
             if (!string.IsNullOrWhiteSpace(dataTable.TableName))
                 builder.Title(dataTable.TableName);
@@ -36,12 +36,6 @@ public static partial class Extensions
     private static IEnumerable<DataRow> AsEnumerable(this DataRowCollection items)
     {
         foreach (DataRow item in items)
-            yield return item;
-    }
-
-    private static IEnumerable<DataTable> AsEnumerable(this DataTableCollection items)
-    {
-        foreach (DataTable item in items)
             yield return item;
     }
 }
