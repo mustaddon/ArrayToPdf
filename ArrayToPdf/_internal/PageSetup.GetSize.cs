@@ -1,5 +1,4 @@
 ﻿using MigraDoc.DocumentObjectModel;
-
 namespace ArrayToPdf._internal;
 
 internal static partial class PageSetupExt

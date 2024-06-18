@@ -47,28 +47,30 @@ public class PdfBuilder
     static Document CreateDocument(Schema schema)
     {
         var document = new Document();
+        document.AddSection();
         document.UseCmykColor = true;
         document.Info.Title = schema.Title;
         document.Info.Subject = schema.Subject;
         document.Info.Author = schema.Author;
-
-        document.DefaultPageSetup.PageFormat = (PageFormat)schema.PageFormat;
-        document.DefaultPageSetup.Orientation = (Orientation)schema.PageOrientation;
-        document.DefaultPageSetup.HeaderDistance = Unit.FromMillimeter(schema.PageMarginTop);
-        document.DefaultPageSetup.FooterDistance = Unit.FromMillimeter(schema.PageMarginBottom);
-        document.DefaultPageSetup.TopMargin = Unit.FromMillimeter(schema.PageMarginTop + (string.IsNullOrWhiteSpace(schema.Header) ? 0 : schema.HeaderHeight));
-        document.DefaultPageSetup.RightMargin = Unit.FromMillimeter(schema.PageMarginRight + _tableLeftBias);
-        document.DefaultPageSetup.BottomMargin = Unit.FromMillimeter(schema.PageMarginBottom + (string.IsNullOrWhiteSpace(schema.Footer) ? 0 : schema.FooterHeight));
-        document.DefaultPageSetup.LeftMargin = Unit.FromMillimeter(schema.PageMarginLeft - _tableLeftBias);
+        var section = document.LastSection;
+        
+        
+        document.LastSection!.PageSetup.PageFormat = (PageFormat)schema.PageFormat;
+        document.LastSection.PageSetup.Orientation = (Orientation)schema.PageOrientation;
+        document.LastSection.PageSetup.HeaderDistance = Unit.FromMillimeter(schema.PageMarginTop);
+        document.LastSection.PageSetup.FooterDistance = Unit.FromMillimeter(schema.PageMarginBottom);
+        document.LastSection.PageSetup.TopMargin = Unit.FromMillimeter(schema.PageMarginTop + (string.IsNullOrWhiteSpace(schema.Header) ? 0 : schema.HeaderHeight));
+        document.LastSection.PageSetup.RightMargin = Unit.FromMillimeter(schema.PageMarginRight + _tableLeftBias);
+        document.LastSection.PageSetup.BottomMargin = Unit.FromMillimeter(schema.PageMarginBottom + (string.IsNullOrWhiteSpace(schema.Footer) ? 0 : schema.FooterHeight));
+        document.LastSection.PageSetup.LeftMargin = Unit.FromMillimeter(schema.PageMarginLeft - _tableLeftBias);
 
         PageSetup.GetPageSize(document.DefaultPageSetup.PageFormat, out var width, out var height);
-        document.DefaultPageSetup.PageWidth = width;
-        document.DefaultPageSetup.PageHeight = height;
+        document.LastSection.PageSetup.PageWidth = width;
+        document.LastSection.PageSetup.PageHeight = height;
 
         var innerWidth = Unit.FromPoint(document.DefaultPageSetup.GetWidth() - document.DefaultPageSetup.LeftMargin - document.DefaultPageSetup.RightMargin);
 
         AddStyles(document, innerWidth);
-        AddSection(document);
         AddHeader(document, schema);
         AddFooter(document, schema);
         AddTable(document, innerWidth, schema);
