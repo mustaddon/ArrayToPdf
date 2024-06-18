@@ -6,19 +6,11 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Text;
 
 namespace ArrayToPdf;
 
 public class PdfBuilder
 {
-#if !NET45
-    static PdfBuilder()
-    {
-        Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
-    }
-#endif
-
     public static MemoryStream Build<T>(IEnumerable<T> items, Action<SchemaBuilder<T>>? schema = null)
     {
         var ms = new MemoryStream();
@@ -36,7 +28,7 @@ public class PdfBuilder
 
     static void CreatePdf(Stream stream, Schema schema)
     {
-        var renderer = new PdfDocumentRenderer(true);
+        var renderer = new PdfDocumentRenderer();
         renderer.Document = CreateDocument(schema);
         renderer.RenderDocument();
         renderer.PdfDocument.Save(stream);
@@ -52,24 +44,22 @@ public class PdfBuilder
         document.Info.Title = schema.Title;
         document.Info.Subject = schema.Subject;
         document.Info.Author = schema.Author;
-        var section = document.LastSection;
-        
-        
-        document.LastSection!.PageSetup.PageFormat = (PageFormat)schema.PageFormat;
-        document.LastSection.PageSetup.Orientation = (Orientation)schema.PageOrientation;
-        document.LastSection.PageSetup.HeaderDistance = Unit.FromMillimeter(schema.PageMarginTop);
-        document.LastSection.PageSetup.FooterDistance = Unit.FromMillimeter(schema.PageMarginBottom);
-        document.LastSection.PageSetup.TopMargin = Unit.FromMillimeter(schema.PageMarginTop + (string.IsNullOrWhiteSpace(schema.Header) ? 0 : schema.HeaderHeight));
-        document.LastSection.PageSetup.RightMargin = Unit.FromMillimeter(schema.PageMarginRight + _tableLeftBias);
-        document.LastSection.PageSetup.BottomMargin = Unit.FromMillimeter(schema.PageMarginBottom + (string.IsNullOrWhiteSpace(schema.Footer) ? 0 : schema.FooterHeight));
-        document.LastSection.PageSetup.LeftMargin = Unit.FromMillimeter(schema.PageMarginLeft - _tableLeftBias);
 
-        PageSetup.GetPageSize(document.DefaultPageSetup.PageFormat, out var width, out var height);
+        var pageSetup = document.LastSection!.PageSetup;
+        pageSetup.PageFormat = (PageFormat)schema.PageFormat;
+        pageSetup.Orientation = (Orientation)schema.PageOrientation;
+        pageSetup.HeaderDistance = Unit.FromMillimeter(schema.PageMarginTop);
+        pageSetup.FooterDistance = Unit.FromMillimeter(schema.PageMarginBottom);
+        pageSetup.TopMargin = Unit.FromMillimeter(schema.PageMarginTop + (string.IsNullOrWhiteSpace(schema.Header) ? 0 : schema.HeaderHeight));
+        pageSetup.RightMargin = Unit.FromMillimeter(schema.PageMarginRight + _tableLeftBias);
+        pageSetup.BottomMargin = Unit.FromMillimeter(schema.PageMarginBottom + (string.IsNullOrWhiteSpace(schema.Footer) ? 0 : schema.FooterHeight));
+        pageSetup.LeftMargin = Unit.FromMillimeter(schema.PageMarginLeft - _tableLeftBias);
+
+        PageSetup.GetPageSize(pageSetup.PageFormat, out var width, out var height);
         document.LastSection.PageSetup.PageWidth = width;
         document.LastSection.PageSetup.PageHeight = height;
 
-        var innerWidth = Unit.FromPoint(document.DefaultPageSetup.GetWidth() - document.DefaultPageSetup.LeftMargin - document.DefaultPageSetup.RightMargin);
-
+        var innerWidth = pageSetup.GetWidth() - pageSetup.LeftMargin - pageSetup.RightMargin;
         AddStyles(document, innerWidth);
         AddHeader(document, schema);
         AddFooter(document, schema);
@@ -85,12 +75,6 @@ public class PdfBuilder
 
         style = document.Styles[StyleNames.Footer];
         style.ParagraphFormat.AddTabStop(Unit.FromMillimeter(innerWidth.Millimeter + _tableLeftBias), TabAlignment.Right);
-    }
-
-    static void AddSection(Document document)
-    {
-        var section = document.AddSection();
-        section.PageSetup = document.DefaultPageSetup.Clone();
     }
 
     static void AddHeader(Document document, Schema schema)
@@ -125,7 +109,7 @@ public class PdfBuilder
 
     static void AddTmpText(Paragraph paragraph, string? template, Schema schema)
     {
-        if(template != null)
+        if (template != null)
             foreach (var part in template.Split(_separator, StringSplitOptions.RemoveEmptyEntries))
                 switch (part)
                 {
@@ -154,7 +138,7 @@ public class PdfBuilder
         table.Borders.Width = 0.5;
 
 
-        var colWidth = Unit.FromPoint(innerWidth / schema.Columns.Count);
+        var colWidth = Unit.FromPoint(innerWidth.Point / schema.Columns.Count);
         var settedWidth = schema.Columns.Sum(x => x.Width ?? 0);
         var autoWidthCount = schema.Columns.Count(x => !x.Width.HasValue);
         var autoWidth = (innerWidth.Millimeter - settedWidth) / (autoWidthCount > 0 ? autoWidthCount : 1);
