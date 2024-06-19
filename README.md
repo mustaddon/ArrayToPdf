@@ -1,4 +1,4 @@
-# ArrayToPdf [![NuGet version](https://badge.fury.io/nu/ArrayToPdf.svg)](http://badge.fury.io/nu/ArrayToPdf)
+# ArrayToPdf [![NuGet version](https://badge.fury.io/nu/ArrayToPdf.svg?23)](http://badge.fury.io/nu/ArrayToPdf)
 Create PDF from Array (List, DataTable, ...)
 
 ### Example 1: Create with default settings
